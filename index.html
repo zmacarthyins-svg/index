@@ -23,6 +23,7 @@
   --border: rgba(255, 255, 255, .65);
   --accent: #F26A2E;
   --header-h: 64px;
+  --radius: 14px;
 }
 
 /* Base Styles */
@@ -74,8 +75,22 @@ body > *:not(.bg):not(.az-header) {
   min-height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
 }
-.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; cursor: pointer; }
 .brand .name { font-family: "Montserrat", Arial, sans-serif; font-weight: 900; letter-spacing: .02em; font-size: 1.3rem; }
+
+/* Navigation Bar inside the Header */
+.nav-menu {
+  display: none; /* Hidden on landing page, shown when logged in */
+  gap: 15px;
+}
+.nav-link {
+  background: none; border: none; font-weight: 600; color: var(--text); cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: background 0.2s;
+}
+.nav-link:hover, .nav-link.active-link {
+  background: var(--warm-sand);
+  color: var(--shield-blue);
+}
+
 .header-cta .btn {
   background: var(--accent); color: #fff; text-decoration: none; border: none; cursor: pointer;
   padding: 10px 18px; border-radius: 12px; font-weight: 800; font-size: .98rem;
@@ -84,6 +99,14 @@ body > *:not(.bg):not(.az-header) {
 .header-cta .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.16); }
 
 body { padding-top: var(--header-h); }
+
+/* ===== Tab/Page Management Utilities ===== */
+.view-section {
+  display: none;
+}
+.view-section.active-view {
+  display: block;
+}
 
 /* ===== Headline ===== */
 .headline {
@@ -144,8 +167,8 @@ body { padding-top: var(--header-h); }
 }
 .video-cta .btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(0,0,0,.18); }
 
-/* ===== Chat Section ===== */
-.chat {
+/* ===== Chat & Component Styling ===== */
+.chat, .dashboard-container {
   background: var(--card); border: 1px solid var(--border); backdrop-filter: blur(10px);
   border-radius: 18px; padding: 24px; box-shadow: 0 18px 40px rgba(20,35,60,.12);
   text-align: left; width: min(92vw, 760px); margin: 40px auto 40px;
@@ -156,7 +179,6 @@ body { padding-top: var(--header-h); }
   border: 3px solid #e6eef6; box-shadow: 0 6px 20px rgba(16,44,80,.18);
   background: var(--shield-blue); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold;
 }
-.name { font-family: "Montserrat", Arial, sans-serif; font-weight: 700; color: var(--text); }
 .bubble {
   background: var(--cream); border: 1px solid #e6eef6; border-radius: 14px; padding: 14px 16px; line-height: 1.5;
 }
@@ -184,63 +206,144 @@ button.action:hover { transform: translateY(-1px); background: #edf2f7; }
 <!-- Header -->
 <header class="az-header">
   <div class="row">
-    <a href="#" class="brand">
+    <div class="brand" onclick="navigateTo('landing')">
       <span class="name">Agent Zenn</span>
-    </a>
-    <div class="header-cta">
-      <a href="#join" class="btn">Get Started</a>
+    </div>
+    
+    <!-- Central Navigation Menu (Hidden on Landing, Revealed on Login) -->
+    <nav class="nav-menu" id="mainNav">
+      <button class="nav-link active-link" onclick="navigateTo('dashboard')">Dashboard</button>
+      <button class="nav-link" onclick="navigateTo('profile')">Profile</button>
+      <button class="nav-link" onclick="navigateTo('compare')">Compare</button>
+      <button class="nav-link" onclick="navigateTo('chat')">Assistant</button>
+    </nav>
+
+    <div class="header-cta" id="authCtaContainer">
+      <button onclick="simulateLogin()" class="btn" id="authBtn">Get Started</button>
     </div>
   </div>
 </header>
 
-<!-- Main Content -->
+<!-- Main Portal Container -->
 <main>
-  <h1 class="headline">Find Peace with Insurance</h1>
 
-  <section class="video membership">
-    <div class="video-head trailer">
-      <p class="precopy">
-        Stop stressing over confusing policies. Agent Zenn offers <strong>calm, clear, and honest</strong> guidance to help you protect what matters most.
-      </p>
-      <div class="trailer-title">
-        <span class="line">Clear Coverage</span>
-        <span class="line">Honest Advice</span>
+  <!-- ================= VIEW 1: LANDING PAGE (DEFAULT VIEW) ================= -->
+  <div id="view-landing" class="view-section active-view">
+    <h1 class="headline">Find Peace with Insurance</h1>
+
+    <section class="video membership">
+      <div class="video-head trailer">
+        <p class="precopy">
+          Stop stressing over confusing policies. Agent Zenn offers <strong>calm, clear, and honest</strong> guidance to help you protect what matters most.
+        </p>
+        <div class="trailer-title">
+          <span class="line">Clear Coverage</span>
+          <span class="line">Honest Advice</span>
+        </div>
       </div>
-    </div>
 
-    <div class="video-card">
-      <iframe src="https://youtube.com" title="Agent Zenn Introduction Video" allowfullscreen></iframe>
-    </div>
-
-    <div class="video-cta" id="join">
-      <a href="#" class="btn">Join Free Today</a>
-    </div>
-  </section>
-
-  <!-- Chat Box -->
-  <section class="chat">
-    <div class="headerRow">
-      <div class="avatar">AZ</div>
-      <div>
-        <div class="name">Zenn Assistant</div>
-        <div style="font-size:0.85rem; color:#666;">Online</div>
+      <div class="video-card">
+        <iframe src="https://youtube.com" title="Agent Zenn Introduction Video" allowfullscreen></iframe>
       </div>
-    </div>
-    <div class="bubble">
-      Hello! Let's clear up the insurance confusion. What kind of coverage are you looking to explore today?
-    </div>
-    <div class="actions">
-      <button class="action">🛡️ Health Insurance</button>
-      <button class="action">🚗 Auto & Property</button>
-      <button class="action">💼 Business Coverage</button>
-      <button class="action">🔍 General Questions</button>
-    </div>
-  </section>
-</main>
 
-<footer class="footer">
-  <p>&copy; 2026 Agent Zenn. All rights reserved.</p>
-</footer>
+      <div class="video-cta">
+        <button onclick="simulateLogin()" class="btn">Join Free Today</button>
+      </div>
+    </section>
 
-</body>
-</html>
+    <!-- Chat Preview Box -->
+    <section class="chat">
+      <div class="headerRow">
+        <div class="avatar">AZ</div>
+        <div>
+          <div class="name">Zenn Assistant</div>
+          <div style="font-size:0.85rem; color:#666;">Online</div>
+        </div>
+      </div>
+      <div class="bubble">
+        Hello! Let's clear up the insurance confusion. What kind of coverage are you looking to explore today?
+      </div>
+      <div class="actions">
+        <button class="action" onclick="simulateLogin()">🛡️ Health Insurance</button>
+        <button class="action" onclick="simulateLogin()">🚗 Auto & Property</button>
+        <button class="action" onclick="simulateLogin()">💼 Business Coverage</button>
+        <button class="action" onclick="simulateLogin()">🔍 General Questions</button>
+      </div>
+    </section>
+  </div>
+
+
+  <!-- ================= VIEW 2: AUTHENTICATED DASHBOARD ================= -->
+  <div id="view-dashboard" class="view-section">
+    <div class="dashboard-container">
+      <h2>Welcome Back to Your Peace of Mind</h2>
+      <p>Here is your current insurance snapshot:</p>
+      <div class="bubble" style="background:#fff; margin-bottom: 15px;">
+        <strong>Active Policies:</strong> 0 Profiles Built.
+      </div>
+      <button class="action" onclick="navigateTo('profile')">📋 Finish Your Insurance Profile</button>
+    </div>
+  </div>
+
+
+  <!-- ================= VIEW 3: INSURANCE PROFILE ================= -->
+  <div id="view-profile" class="view-section">
+    <div class="dashboard-container">
+      <h2>Your Insurance Profile</h2>
+Fill out your details to allow our tools to accurately check for optimized market rates.
+
+Profile Setup Form placeholder. Paste your profile text fields here.
+
+
+Compare Live Quotes
+Analyze differences between your current plan pricing and direct market recommendations side-by-side.
+
+AZ
+
+Zenn Assistant Portal
+Online & Secure
+
+
+
+Welcome to your secure messaging portal. Ask queries or upload documents safely using encrypted protocols.
+
+
+© 2026 Agent Zenn. All rights reserved.
+function navigateTo(viewId) {
+// Hide all architectural views
+document.querySelectorAll('.view-section').forEach(section => {
+section.classList.remove('active-view');
+});
+// Reveal target view
+const targetView = document.getElementById('view-' + viewId);
+if(targetView) {
+targetView.classList.add('active-view');
+}
+// Manage Navbar highlights
+document.querySelectorAll('.nav-link').forEach(link => {
+link.classList.remove('active-link');
+// Match the inner text to know which layout tab button to make bold/active
+if(link.innerText.toLowerCase() === viewId) {
+link.classList.add('active-link');
+}
+});
+// Smooth scroll back to top of new section view
+window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// Simulated User Login Security Event Guard
+function simulateLogin() {
+// Reveal Navigation Tab System
+document.getElementById('mainNav').style.display = 'flex';
+// Change "Get Started" to a Sign Out action
+const authContainer = document.getElementById('authCtaContainer');
+authContainer.innerHTML = 'Sign Out';
+// Redirect context past the initial landing layout straight into Dashboard
+navigateTo('dashboard');
+}
+function simulateLogout() {
+// Hide tabs, swap buttons back, drop down to main screen
+document.getElementById('mainNav').style.display = 'none';
+const authContainer = document.getElementById('authCtaContainer');
+authContainer.innerHTML = 'Get Started';
+navigateTo('landing');
+}
