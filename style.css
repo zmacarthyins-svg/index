@@ -1,0 +1,97 @@
+/* 1. Import Fonts from Google Fonts */
+@import url('https://googleapis.com');
+
+/* 2. Brand Design Tokens (CSS Variables) */
+:root {
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'DM Serif Display', serif;
+
+  /* Agent Zenn Brand Colors */
+  --background: #F7FAF9;        /* Light peaceful background */
+  --foreground: #1F2933;        /* Dark slate text */
+  --card: #FFFFFF;
+  --card-foreground: #1F2933;
+  --primary: #2BB673;           /* Zenn Green */
+  --primary-foreground: #FFFFFF;
+  --secondary: #7FD1C2;         /* Soft Teal */
+  --secondary-foreground: #1F2933;
+  --muted: #EEF4F2;             /* Soft gray-green tint */
+  --muted-foreground: #6B7C85;
+  --accent: #E5F6EE;
+  --accent-foreground: #1B7248;
+  --destructive: #E5533D;       /* Error / Danger Red */
+  --destructive-foreground: #FFFFFF;
+  --border: #E2EAE7;
+  --input: #DCE5E1;
+  --radius: 0.875rem;
+}
+
+/* 3. Automatic Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0F151C;
+    --foreground: #EEF4F2;
+    --card: #151D25;
+    --card-foreground: #EEF4F2;
+    --primary: #24A366;
+    --primary-foreground: #FFFFFF;
+    --secondary: #274C4B;
+    --secondary-foreground: #E0ECE8;
+    --muted: #1A242D;
+    --muted-foreground: #8B9CA5;
+    --accent: #133224;
+    --accent-foreground: #A1DCBF;
+    --destructive: #B83A27;
+    --destructive-foreground: #FDFEFE;
+    --border: #222E3A;
+    --input: #222E3A;
+  }
+}
+
+/* 4. Baseline Global Elements */
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 5. Typography Layout */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif); /* Uses your premium Serif heading font */
+  letter-spacing: -0.025em;        /* Matches Tailwind's tracking-tight */
+  margin-top: 0;
+}
+
+/* 6. Utility Class Shortcuts (To easily match Base44 layouts) */
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  border: none;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
