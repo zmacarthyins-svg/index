@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Dashboard | Peace Financial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        peace: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(241, 245, 249, 0.5);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="h-full text-slate-800 dark:text-slate-100 dark:bg-slate-900 font-sans transition-colors duration-300">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navigation Header -->
+    <nav class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white font-bold shadow-md shadow-brand-500/20">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-brand-700 to-indigo-500 bg-clip-text text-transparent dark:from-brand-500 dark:to-indigo-300">
+                    PeaceHQ
+                </span>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all">
+                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                
+                <!-- Quick User Profile -->
+                <div class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-700">
+                    <img id="navAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="Jane Doe" class="w-9 h-9 rounded-full object-cover border-2 border-brand-500">
+                    <span id="navUserName" class="hidden sm:inline font-semibold text-sm">Jane Doe</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Container -->
+    <main class="max-w-5xl mx-auto px-4 md:px-8 py-6 space-y-6">
+
+        <!-- WelcomeHeader Component -->
+        <section id="welcome-header" class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-indigo-800 text-white p-6 md:p-8 shadow-xl shadow-brand-600/15">
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="absolute right-20 -top-10 w-32 h-32 bg-indigo-400/20 rounded-full blur-xl pointer-events-none"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <img id="headerAvatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80" alt="User Profile" class="w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-2 border-white/30 shadow-md">
+                        <span class="absolute -bottom-1 -right-1 bg-peace-500 text-white p-1 rounded-full text-xs shadow-sm" title="Verified Account">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Welcome back, <span id="headerUserName">Jane Doe</span>!</h1>
+                            <span class="bg-white/20 text-xs px-2.5 py-0.5 rounded-full backdrop-blur-md font-medium border border-white/10">PRO Tier</span>
+                        </div>
+                        <p class="text-brand-100 text-sm mt-1">Here is what is happening with your portfolio and rate updates today.</p>
+                    </div>
+                </div>
+
+                <!-- Peace Points Header Badge -->
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 flex items-center gap-4 self-start md:self-auto min-w-[200px]">
+                    <div class="w-12 h-12 rounded-xl bg-peace-500/20 flex items-center justify-center text-peace-100 text-2xl">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-brand-100 font-medium uppercase tracking-wider block">Peace Points</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="headerPoints" class="text-2xl font-black tracking-tight text-white">1,250</span>
+                            <span class="text-xs text-peace-200 font-bold">PTS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Top Leaderboard AdBanner Component -->
+        <section id="ad-banner-leaderboard" class="transition-all duration-300">
+            <div class="glass-card rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-amber-200/50 bg-gradient-to-r from-amber-50/50 via-white to-amber-50/30 dark:from-amber-950/20 dark:via-slate-800 dark:to-slate-800 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 text-lg">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-2 py-0.5 rounded-md">Sponsored</span>
+                            <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">Unlock 5.25% APY High-Yield Savings</h4>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Transfer eligible funds today and earn 250 bonus Peace Points automatically.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 shrink-0 w-full sm:w-auto justify-end">
+                    <button onclick="showToast('Redirecting to High-Yield Savings offer...', 'info')" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-semibold shadow-sm transition-all">
+                        Learn More
+                    </button>
+                    <button onclick="dismissBanner('ad-banner-leaderboard')" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+                        <i class="fa-solid fa-xmark text-base"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MediaFeed Component -->
+        <section id="media-feed" class="glass-card rounded-2xl p-6 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-newspaper text-brand-500"></i>
+                        Market Insights & Media
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Curated financial news and rate trends</p>
+                </div>
+
+                <!-- Feed Category Filter Tabs -->
+                <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl overflow-x-auto custom-scrollbar">
+                    <button onclick="filterMedia('all', this)" class="media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm transition-all">All</button>
+                    <button onclick="filterMedia('rates', this)" class="media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">Rates</button>
+                    <button onclick="filterMedia('guides', this)" class="media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">Guides</button>
+                    <button onclick="filterMedia('news', this)" class="media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all">Market News</button>
+                </div>
+            </div>
+
+            <!-- Media Feed Grid -->
+            <div id="mediaGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Card 1 -->
+                <div class="media-card group border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col bg-white dark:bg-slate-800/50" data-category="rates">
+                    <div class="relative h-36 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=500&auto=format&fit=crop&q=80" alt="Mortgage Rates" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 left-2 bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Rates</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[11px] text-slate-400 font-medium">3 mins read • Mortgage</span>
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 mt-1 line-clamp-2">Fixed Mortgage Rates Drop to Lowest Point in 6 Months</h3>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+                            <button onclick="toggleLike(this)" class="text-xs text-slate-500 hover:text-rose-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-heart"></i>
+                                <span>24</span>
+                            </button>
+                            <button onclick="shareContent('Fixed Mortgage Rates Drop')" class="text-xs text-slate-500 hover:text-brand-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-share-from-square"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="media-card group border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col bg-white dark:bg-slate-800/50" data-category="guides">
+                    <div class="relative h-36 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&auto=format&fit=crop&q=80" alt="Peace Points Guide" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 left-2 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Guides</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[11px] text-slate-400 font-medium">5 mins read • Rewards</span>
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 mt-1 line-clamp-2">How to Maximize Your Peace Points on Daily Transfers</h3>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+                            <button onclick="toggleLike(this)" class="text-xs text-slate-500 hover:text-rose-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-heart"></i>
+                                <span>42</span>
+                            </button>
+                            <button onclick="shareContent('Maximize Peace Points')" class="text-xs text-slate-500 hover:text-brand-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-share-from-square"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="media-card group border border-slate-200 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-md transition-all flex flex-col bg-white dark:bg-slate-800/50" data-category="news">
+                    <div class="relative h-36 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=500&auto=format&fit=crop&q=80" alt="Federal Reserve" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2 left-2 bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-md uppercase">Market News</span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[11px] text-slate-400 font-medium">2 mins read • Central Bank</span>
+                            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 mt-1 line-clamp-2">Fed Signals Potential Rate Cut in Upcoming Meeting</h3>
+                        </div>
+                        <div class="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-slate-700/50">
+                            <button onclick="toggleLike(this)" class="text-xs text-slate-500 hover:text-rose-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-heart"></i>
+                                <span>18</span>
+                            </button>
+                            <button onclick="shareContent('Fed Rate Signal')" class="text-xs text-slate-500 hover:text-brand-500 flex items-center gap-1.5 transition-colors">
+                                <i class="fa-regular fa-share-from-square"></i> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- QuickActions Component -->
+        <section id="quick-actions">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Quick Actions</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                
+                <button onclick="openCreateAlertModal()" class="glass-card p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand-500 hover:shadow-md transition-all group">
+                    <div class="w-11 h-11 rounded-xl bg-brand-50 dark:bg-brand-900/40 text-brand-600 dark:text-brand-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-bell-plus"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Create Alert</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">Track Rate Drops</span>
+                </button>
+
+                <button onclick="showToast('Opening Portfolio overview...', 'info')" class="glass-card p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand-500 hover:shadow-md transition-all group">
+                    <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">View Portfolio</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">Assets & Mortgages</span>
+                </button>
+
+                <button onclick="openRedeemModal()" class="glass-card p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand-500 hover:shadow-md transition-all group">
+                    <div class="w-11 h-11 rounded-xl bg-peace-50 dark:bg-peace-900/40 text-peace-600 dark:text-peace-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Redeem Points</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">Get Cash & Perks</span>
+                </button>
+
+                <button onclick="showToast('Opening Funds Transfer window...', 'info')" class="glass-card p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand-500 hover:shadow-md transition-all group">
+                    <div class="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Transfer Funds</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">Move Money Fast</span>
+                </button>
+
+                <button onclick="showToast('Connecting to Peace Support agent...', 'success')" class="glass-card p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand-500 hover:shadow-md transition-all group col-span-2 sm:col-span-1">
+                    <div class="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg mb-2 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200">Support Chat</span>
+                    <span class="text-[10px] text-slate-400 mt-0.5">24/7 Priority Help</span>
+                </button>
+
+            </div>
+        </section>
+
+        <!-- 2-Column Grid Section -->
+        <div class="grid md:grid-cols-2 gap-6">
+
+            <!-- ProfileSummaryCard Component -->
+            <section id="profile-summary" class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+                        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-brand-500"></i>
+                            Profile Summary
+                        </h2>
+                        <span class="px-2.5 py-1 bg-peace-50 dark:bg-peace-900/40 text-peace-700 dark:text-peace-300 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-peace-500 animate-pulse"></span>
+                            Verified
+                        </span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-500 dark:text-slate-400">Full Name</span>
+                            <span id="cardFullName" class="font-semibold text-slate-800 dark:text-slate-200">Jane Doe</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-500 dark:text-slate-400">Email Address</span>
+                            <span id="cardEmail" class="font-semibold text-slate-800 dark:text-slate-200">jane.doe@example.com</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-500 dark:text-slate-400">Credit Score Rating</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                                760 <span class="text-xs font-normal text-slate-400">(Excellent)</span>
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-500 dark:text-slate-400">Member Since</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-200">March 2023</span>
+                        </div>
+                    </div>
+
+                    <!-- Mini Security Box -->
+                    <div class="mt-5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between text-xs">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-lock text-brand-500 text-sm"></i>
+                            <span class="text-slate-600 dark:text-slate-300">2-Factor Auth Enabled</span>
+                        </div>
+                        <button onclick="showToast('Security settings opening...', 'info')" class="text-brand-600 dark:text-brand-400 font-bold hover:underline">Manage</button>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                    <span class="text-xs text-slate-400">Consumer ID: #PC-889021</span>
+                    <button onclick="openEditProfileModal()" class="text-xs font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 flex items-center gap-1">
+                        Edit Profile <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- PeacePointsWidget Component -->
+            <section id="peace-points-widget" class="glass-card rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+                        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-coins text-amber-500"></i>
+                            Peace Points Rewards
+                        </h2>
+                        <span class="text-xs font-semibold text-slate-500">Gold Tier</span>
+                    </div>
+
+                    <!-- Points Counter -->
+                    <div class="flex items-baseline justify-between mb-2">
+                        <div>
+                            <span class="text-xs text-slate-400 font-medium">Available Balance</span>
+                            <div class="flex items-baseline gap-1.5">
+                                <span id="widgetPoints" class="text-3xl font-black text-slate-800 dark:text-slate-100">1,250</span>
+                                <span class="text-xs font-bold text-peace-600 dark:text-peace-400">PTS</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 font-medium">Next Tier Target</span>
+                            <p class="text-sm font-bold text-slate-700 dark:text-slate-300">2,000 PTS</p>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden mb-5">
+                        <div id="pointsProgress" class="bg-gradient-to-r from-peace-500 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: 62.5%;"></div>
+                    </div>
+
+                    <!-- Recent Points Earned Activity Log -->
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Recent Earnings</h3>
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                            <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-peace-500"></i> Monthly Refinance Alert Active
+                            </span>
+                            <span class="font-bold text-peace-600 dark:text-peace-400">+100 PTS</span>
+                        </div>
+                        <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                            <span class="text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                                <i class="fa-solid fa-circle-check text-peace-500"></i> Profile Verification Complete
+                            </span>
+                            <span class="font-bold text-peace-600 dark:text-peace-400">+250 PTS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="openRedeemModal()" class="w-full mt-6 py-2.5 bg-gradient-to-r from-peace-600 to-emerald-600 hover:from-peace-700 hover:to-emerald-700 text-white font-bold rounded-xl text-xs shadow-md shadow-peace-600/20 transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-gift"></i> Redeem Rewards Now
+                </button>
+            </section>
+
+        </div>
+
+        <!-- AlertsWidget Component -->
+        <section id="alerts-widget" class="glass-card rounded-2xl p-6 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100">Rate Alerts</h2>
+                        <span id="unreadBadge" class="bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                            2 Unread
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Automated notifications based on market interest rate shifts</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="markAllAlertsRead()" class="px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all">
+                        Mark All Read
+                    </button>
+                    <button onclick="openCreateAlertModal()" class="px-3.5 py-1.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> New Alert
+                    </button>
+                </div>
+            </div>
+
+            <!-- Alerts List -->
+            <div id="alertsList" class="space-y-3">
+                <!-- Alert 1 -->
+                <div class="alert-item p-4 rounded-xl border border-brand-200 dark:border-brand-900/50 bg-brand-50/40 dark:bg-brand-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all" data-read="false">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                            <i class="fa-solid fa-arrow-trend-down"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">30-Yr Fixed Rate Dropped Below 6.25%</h4>
+                                <span class="unread-dot w-2 h-2 rounded-full bg-brand-600"></span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Your target mortgage rate condition has been triggered.</p>
+                            <span class="text-[10px] text-slate-400 font-medium">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <button onclick="toggleAlertRead(this)" class="read-toggle-btn text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all">
+                            Mark Read
+                        </button>
+                        <button onclick="deleteAlert(this)" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Alert 2 -->
+                <div class="alert-item p-4 rounded-xl border border-brand-200 dark:border-brand-900/50 bg-brand-50/40 dark:bg-brand-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all" data-read="false">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                            <i class="fa-solid fa-piggy-bank"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">High-Yield Savings Rate Increased to 5.10%</h4>
+                                <span class="unread-dot w-2 h-2 rounded-full bg-brand-600"></span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Peace Financial partner institution increased APY rate.</p>
+                            <span class="text-[10px] text-slate-400 font-medium">1 day ago</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <button onclick="toggleAlertRead(this)" class="read-toggle-btn text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all">
+                            Mark Read
+                        </button>
+                        <button onclick="deleteAlert(this)" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Rectangle AdBanner Component -->
+        <section id="ad-banner-rectangle" class="transition-all duration-300">
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden bg-gradient-to-r from-indigo-900 to-slate-900 text-white border-0 shadow-lg">
+                <div class="absolute -right-8 -bottom-8 w-40 h-40 bg-indigo-500/20 rounded-full blur-xl"></div>
+                <div class="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="space-y-1 text-center sm:text-left">
+                        <span class="text-[10px] font-bold uppercase tracking-wider bg-white/20 text-indigo-200 px-2.5 py-0.5 rounded-full">Partner Offer</span>
+                        <h3 class="text-lg font-extrabold text-white">Refinance Your Mortgage & Save Up To $340/Mo</h3>
+                        <p class="text-xs text-indigo-200">Zero closing fee consultation for Peace PRO members.</p>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <button onclick="showToast('Loading mortgage calculator...', 'info')" class="px-5 py-2.5 bg-white text-indigo-950 hover:bg-indigo-50 font-bold rounded-xl text-xs shadow-md transition-all">
+                            Calculate Savings
+                        </button>
+                        <button onclick="dismissBanner('ad-banner-rectangle')" class="text-indigo-300 hover:text-white p-2">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Create Rate Alert Modal -->
+    <div id="createAlertModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-bell text-brand-500"></i> Create New Rate Alert
+                </h3>
+                <button onclick="closeCreateAlertModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form id="createAlertForm" onsubmit="handleCreateAlert(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Product Type</label>
+                    <select id="alertProduct" class="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option>30-Year Fixed Mortgage</option>
+                        <option>15-Year Fixed Mortgage</option>
+                        <option>High-Yield Savings APY</option>
+                        <option>Auto Loan 60-Month</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Target Rate (%)</label>
+                    <input id="alertTargetRate" type="number" step="0.01" placeholder="e.g. 5.99" required class="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Alert Trigger</label>
+                    <select id="alertCondition" class="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option>When rate drops equal to or below</option>
+                        <option>When rate increases equal to or above</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeCreateAlertModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-md">Create Alert</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Redeem Points Modal -->
+    <div id="redeemModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-gift text-peace-500"></i> Redeem Peace Points
+                </h3>
+                <button onclick="closeRedeemModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div class="p-3 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between hover:border-peace-500 transition-all">
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">$25 Statement Credit</h4>
+                        <p class="text-[10px] text-slate-400">Apply directly to mortgage account</p>
+                    </div>
+                    <button onclick="handleRedeem(500, '$25 Statement Credit')" class="px-3 py-1.5 bg-peace-600 hover:bg-peace-700 text-white text-xs font-bold rounded-lg">500 PTS</button>
+                </div>
+                <div class="p-3 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between hover:border-peace-500 transition-all">
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-800 dark:text-slate-100">$50 Amazon Gift Card</h4>
+                        <p class="text-[10px] text-slate-400">Instant digital code email delivery</p>
+                    </div>
+                    <button onclick="handleRedeem(1000, '$50 Amazon Gift Card')" class="px-3 py-1.5 bg-peace-600 hover:bg-peace-700 text-white text-xs font-bold rounded-lg">1,000 PTS</button>
+                </div>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeRedeemModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen text-brand-500"></i> Edit Profile Information
+                </h3>
+                <button onclick="closeEditProfileModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <form onsubmit="handleProfileUpdate(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+                    <input id="editNameInput" type="text" value="Jane Doe" required class="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                    <input id="editEmailInput" type="email" value="jane.doe@example.com" required class="w-full text-xs p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeEditProfileModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-md">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Management
+        let userState = {
+            name: "Jane Doe",
+            email: "jane.doe@example.com",
+            peacePoints: 1250,
+            unreadAlertsCount: 2
+        };
+
+        // Dark Mode Toggle Logic
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-lg text-amber-400';
+            }
+        }
+
+        // Toast Notifications Function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' 
+                ? 'bg-emerald-800 text-emerald-100 border-emerald-700' 
+                : 'bg-slate-800 text-slate-100 border-slate-700';
+
+            const iconClass = type === 'success' 
+                ? 'fa-circle-check text-emerald-400' 
+                : 'fa-circle-info text-brand-400';
+
+            toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl border shadow-xl text-xs font-semibold transition-all duration-300 transform translate-y-2 opacity-0 ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-base"></i><span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Dismiss Ad Banner
+        function dismissBanner(bannerId) {
+            const banner = document.getElementById(bannerId);
+            if (banner) {
+                banner.style.opacity = '0';
+                banner.style.transform = 'scale(0.95)';
+                setTimeout(() => banner.style.display = 'none', 200);
+            }
+        }
+
+        // Update UI State Displays
+        function updateUI() {
+            document.getElementById('headerUserName').textContent = userState.name;
+            document.getElementById('navUserName').textContent = userState.name;
+            document.getElementById('cardFullName').textContent = userState.name;
+            document.getElementById('cardEmail').textContent = userState.email;
+            
+            document.getElementById('headerPoints').textContent = userState.peacePoints.toLocaleString();
+            document.getElementById('widgetPoints').textContent = userState.peacePoints.toLocaleString();
+
+            const targetPoints = 2000;
+            const progressPct = Math.min((userState.peacePoints / targetPoints) * 100, 100);
+            document.getElementById('pointsProgress').style.width = `${progressPct}%`;
+
+            const badge = document.getElementById('unreadBadge');
+            badge.textContent = `${userState.unreadAlertsCount} Unread`;
+            if(userState.unreadAlertsCount === 0) {
+                badge.className = "bg-slate-100 dark:bg-slate-800 text-slate-500 text-xs font-bold px-2.5 py-0.5 rounded-full";
+            }
+        }
+
+        // Media Feed Category Filter
+        function filterMedia(category, btn) {
+            document.querySelectorAll('.media-tab-btn').forEach(b => {
+                b.className = "media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all";
+            });
+            btn.className = "media-tab-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-400 shadow-sm transition-all";
+
+            const cards = document.querySelectorAll('.media-card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Like Counter Toggle
+        function toggleLike(btn) {
+            const icon = btn.querySelector('i');
+            const span = btn.querySelector('span');
+            let count = parseInt(span.textContent);
+
+            if (icon.classList.contains('fa-regular')) {
+                icon.className = 'fa-solid fa-heart text-rose-500';
+                btn.classList.add('text-rose-500');
+                span.textContent = count + 1;
+            } else {
+                icon.className = 'fa-regular fa-heart';
+                btn.classList.remove('text-rose-500');
+                span.textContent = count - 1;
+            }
+        }
+
+        // Share Content Action
+        function shareContent(title) {
+            showToast(`Share link copied for "${title}"`, 'success');
+        }
+
+        // Alert Items Functionalities
+        function toggleAlertRead(btn) {
+            const alertItem = btn.closest('.alert-item');
+            const unreadDot = alertItem.querySelector('.unread-dot');
+            const isRead = alertItem.dataset.read === 'true';
+
+            if (!isRead) {
+                alertItem.dataset.read = 'true';
+                alertItem.classList.remove('bg-brand-50/40', 'dark:bg-brand-950/20', 'border-brand-200', 'dark:border-brand-900/50');
+                alertItem.classList.add('bg-white', 'dark:bg-slate-800/40', 'border-slate-200', 'dark:border-slate-700/60');
+                if (unreadDot) unreadDot.style.display = 'none';
+                btn.textContent = 'Mark Unread';
+                userState.unreadAlertsCount = Math.max(0, userState.unreadAlertsCount - 1);
+            } else {
+                alertItem.dataset.read = 'false';
+                alertItem.classList.add('bg-brand-50/40', 'dark:bg-brand-950/20', 'border-brand-200', 'dark:border-brand-900/50');
+                alertItem.classList.remove('bg-white', 'dark:bg-slate-800/40', 'border-slate-200', 'dark:border-slate-700/60');
+                if (unreadDot) unreadDot.style.display = 'block';
+                btn.textContent = 'Mark Read';
+                userState.unreadAlertsCount += 1;
+            }
+            updateUI();
+        }
+
+        function markAllAlertsRead() {
+            document.querySelectorAll('.alert-item').forEach(item => {
+                if (item.dataset.read === 'false') {
+                    const btn = item.querySelector('.read-toggle-btn');
+                    if (btn) toggleAlertRead(btn);
+                }
+            });
+            showToast('All rate alerts marked as read', 'success');
+        }
+
+        function deleteAlert(btn) {
+            const alertItem = btn.closest('.alert-item');
+            if (alertItem.dataset.read === 'false') {
+                userState.unreadAlertsCount = Math.max(0, userState.unreadAlertsCount - 1);
+            }
+            alertItem.remove();
+            updateUI();
+            showToast('Alert removed successfully', 'info');
+        }
+
+        // Modals Open/Close
+        function openCreateAlertModal() {
+            document.getElementById('createAlertModal').classList.remove('hidden');
+            document.getElementById('createAlertModal').classList.add('flex');
+        }
+        function closeCreateAlertModal() {
+            document.getElementById('createAlertModal').classList.add('hidden');
+            document.getElementById('createAlertModal').classList.remove('flex');
+        }
+
+        function handleCreateAlert(e) {
+            e.preventDefault();
+            const product = document.getElementById('alertProduct').value;
+            const rate = document.getElementById('alertTargetRate').value;
+
+            const newAlertHtml = `
+                <div class="alert-item p-4 rounded-xl border border-brand-200 dark:border-brand-900/50 bg-brand-50/40 dark:bg-brand-950/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all" data-read="false">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-brand-500 text-white flex items-center justify-center text-sm shrink-0 mt-0.5">
+                            <i class="fa-solid fa-bell"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">${product} Target @ ${rate}%</h4>
+                                <span class="unread-dot w-2 h-2 rounded-full bg-brand-600"></span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Custom active rate monitor established.</p>
+                            <span class="text-[10px] text-slate-400 font-medium">Just now</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                        <button onclick="toggleAlertRead(this)" class="read-toggle-btn text-xs px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all">
+                            Mark Read
+                        </button>
+                        <button onclick="deleteAlert(this)" class="text-slate-400 hover:text-rose-500 p-1.5 transition-colors">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('alertsList').insertAdjacentHTML('afterbegin', newAlertHtml);
+            userState.unreadAlertsCount += 1;
+            userState.peacePoints += 50; // Award 50 bonus points for creating an alert
+            updateUI();
+            closeCreateAlertModal();
+            showToast(`Rate alert created! +50 Peace Points earned.`, 'success');
+        }
+
+        function openRedeemModal() {
+            document.getElementById('redeemModal').classList.remove('hidden');
+            document.getElementById('redeemModal').classList.add('flex');
+        }
+        function closeRedeemModal() {
+            document.getElementById('redeemModal').classList.add('hidden');
+            document.getElementById('redeemModal').classList.remove('flex');
+        }
+
+        function handleRedeem(points, rewardName) {
+            if (userState.peacePoints >= points) {
+                userState.peacePoints -= points;
+                updateUI();
+                closeRedeemModal();
+                showToast(`Redeemed ${rewardName} for ${points} PTS!`, 'success');
+            } else {
+                showToast(`Insufficient Peace Points balance.`, 'info');
+            }
+        }
+
+        function openEditProfileModal() {
+            document.getElementById('editNameInput').value = userState.name;
+            document.getElementById('editEmailInput').value = userState.email;
+            document.getElementById('editProfileModal').classList.remove('hidden');
+            document.getElementById('editProfileModal').classList.add('flex');
+        }
+        function closeEditProfileModal() {
+            document.getElementById('editProfileModal').classList.add('hidden');
+            document.getElementById('editProfileModal').classList.remove('flex');
+        }
+
+        function handleProfileUpdate(e) {
+            e.preventDefault();
+            userState.name = document.getElementById('editNameInput').value;
+            userState.email = document.getElementById('editEmailInput').value;
+            updateUI();
+            closeEditProfileModal();
+            showToast('Profile information updated!', 'success');
+        }
+
+        // Initialize state on load
+        window.onload = function() {
+            updateUI();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Onboarding</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons Script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4">
+
+    <div class="max-w-xl mx-auto space-y-6">
+        
+        <!-- Header Banner / Dashboard elements -->
+        <div class="flex justify-between items-center bg-white border border-slate-200 p-4 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-2">
+                <span class="text-sm font-semibold text-slate-500">Progress:</span>
+                <span id="step-counter" class="text-sm font-bold text-[#1d7db8]">Step 1 of 8</span>
+            </div>
+            <!-- Points Badge Component -->
+            <div class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-3 py-1 rounded-full text-amber-700 font-bold text-sm shadow-sm">
+                <i data-lucide="star" class="w-4 h-4 fill-amber-400 text-amber-500"></i>
+                <span id="points-display">0</span> / 21 Points
+            </div>
+        </div>
+
+        <!-- Global Progress Bar Component -->
+        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+            <div id="progress-bar-fill" class="bg-[#1d7db8] h-full transition-all duration-300" style="width: 12.5%;"></div>
+        </div>
+
+        <!-- Dynamic Content Card Area -->
+        <div id="card-container" class="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm space-y-5 transition-all duration-200">
+            <!-- Dynamic step contents render here -->
+        </div>
+
+    </div>
+
+    <script>
+        // ─── QUIZ DATA AND CONSTANTS ──────────────────────────────────────────
+        const QUIZ_QUESTIONS = [
+            { category: 'Auto', q: 'What does auto insurance cover?', options: ['Only theft and vandalism', 'Damage from covered events and accidents', 'Only collisions with other vehicles'], correct: 1 },
+            { category: 'Auto', q: "If a friend crashes your car, whose insurance is used first?", options: ["Your friend's insurance", "Yours / The Car's insurance", 'Neither — it depends on the state'], correct: 1 },
+            { category: 'Home', q: 'What is the main coverage focus of homeowners insurance?', options: ['Gradual wear and tear', 'Sudden accidental structure damage', 'Flood and earthquake damage only'], correct: 1 },
+            { category: 'Home', q: 'Guests vs. Residents — what is the key difference?', options: ['Both are equally covered', 'Residents must be listed on the policy; guests are covered for injuries', 'Guests are not covered at all'], correct: 1 },
+            { category: 'Home', q: 'What is "Personal Property" coverage?', options: ['Coverage for the physical structure only', 'Belongings inside and outside the home', 'Only items stored in a safe'], correct: 1 },
+            { category: 'Life', q: 'Can you use life insurance benefits while alive?', options: ['No, benefits are only paid at death', 'True — Living Benefits allow access while alive', 'Only in terminal illness states'], correct: 1 },
+            { category: 'Life', q: 'Which employer-provided life insurance benefit do you keep permanently?', options: ['Group term life', 'Portable whole life', 'None of the above'], correct: 1 },
+        ];
+
+        // ─── STATE MANAGEMENT ────────────────────────────────────────────────
+        let currentStep = 0; // Steps: 0=VideoBridge, 1=Quiz, 2=Profile, 3=Auto, 4=Home, 5=Life, 6=Medicare, 7=Pet+Final
+        let points = 0;
+        let currentQuizIndex = 0;
+        
+        let profileForm = { full_name: '', dob: '', address: '', city: '', state: '', zip_code: '', phone: '' };
+        let assetStates = {
+            auto: { method: null, noInsurance: false },
+            home: { method: null, noInsurance: false },
+            life: { method: null, noInsurance: false },
+            medicare: { method: null, noInsurance: false }
+        };
+        let petData = { type: '', provider: '' };
+
+        // ─── ROUTER ENGINE ───────────────────────────────────────────────────
+        function renderStep() {
+            const container = document.getElementById('card-container');
+            
+            // Progress indicators UI updates
+            document.getElementById('step-counter').innerText = `Step ${currentStep + 1} of 8`;
+            document.getElementById('progress-bar-fill').style.width = `${((currentStep + 1) / 8) * 100}%`;
+            document.getElementById('points-display').innerText = Math.round(points);
+
+            // Step Content Router
+            if (currentStep === 0) {
+                renderVideoBridge(container);
+            } else if (currentStep === 1) {
+                renderQuiz(container);
+            } else if (currentStep === 2) {
+                renderProfileForm(container);
+            } else if (currentStep === 3) {
+                renderAssetStep(container, 'auto', 'Auto Insurance', 'shield', '#2563eb');
+            } else if (currentStep === 4) {
+                renderAssetStep(container, 'home', 'Home & Property Insurance', 'home', '#16a34a');
+            } else if (currentStep === 5) {
+                renderAssetStep(container, 'life', 'Life Insurance Plan', 'heart', '#dc2626');
+            } else if (currentStep === 6) {
+                renderAssetStep(container, 'medicare', 'Medicare Advantage / Supplement', 'shield-alert', '#9333ea');
+            } else if (currentStep === 7) {
+                renderPetAndFinal(container);
+            }
+
+            // Refresh icons after injection
+            lucide.createIcons();
+        }
+
+        // ─── STEP RENDERING FUNCTIONS ───────────────────────────────────────
+        
+        // Step 0: Video Bridge Component
+        function renderVideoBridge(container) {
+            container.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="video" class="w-5 h-5 text-[#1d7db8]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 leading-tight">Welcome Video Summary</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Let's quickly get your onboarding path structured.</p>
+                    </div>
+                </div>
+                <div class="aspect-video bg-slate-900 rounded-xl flex items-center justify-center relative overflow-hidden text-white">
+                    <div class="text-center p-4">
+                        <i data-lucide="play-circle" class="w-16 h-16 text-white/80 mx-auto mb-2 cursor-pointer hover:text-white transition-all"></i>
+                        <p class="text-sm text-slate-300">Placeholder Video Bridge Simulation Player</p>
+                    </div>
+                </div>
+                ${getNavButtons(false, true, "Get Started")}
+            `;
+        }
+
+        // Step 1: Micro-Quiz Interaction Engine
+        function renderQuiz(container) {
+            const currentQ = QUIZ_QUESTIONS[currentQuizIndex];
+            let optionsHTML = '';
+            
+            currentQ.options.forEach((opt, idx) => {
+                optionsHTML += `
+                    <button onclick="handleQuizAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-200 rounded-xl hover:bg-slate-50 hover:border-slate-300 font-medium text-sm transition-all focus:outline-none flex justify-between items-center">
+                        <span>${opt}</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+                    </button>
+                `;
+            });
+
+            container.innerHTML = `
+                <div class="flex justify-between items-center border-b pb-3 border-slate-100">
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">${currentQ.category} Trivia</span>
+                    <span class="text-xs text-slate-400 font-medium">Question ${currentQuizIndex + 1} of ${QUIZ_QUESTIONS.length}</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-800 pt-1">${currentQ.q}</h3>
+                <div class="space-y-2 pt-1">${optionsHTML}</div>
+                ${getNavButtons(true, false)}
+            `;
+        }
+
+        function handleQuizAnswer(selectedIndex) {
+            const correctIndex = QUIZ_QUESTIONS[currentQuizIndex].correct;
+            if (selectedIndex === correctIndex) {
+                points += (7 / QUIZ_QUESTIONS.length);
+            }
+            
+            if (currentQuizIndex < QUIZ_QUESTIONS.length - 1) {
+                currentQuizIndex++;
+                renderStep();
+            } else {
+                currentStep++;
+                renderStep();
+            }
+        }
+
+        // Step 2: Core Profile Form Entry
+        function renderProfileForm(container) {
+            container.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="user" class="w-5 h-5 text-[#1d7db8]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 leading-tight">Personal Information</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Help us anchor your coverage assets identity perfectly.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Full Legal Name</label>
+                        <input type="text" value="${profileForm.full_name}" oninput="updateProfileField('full_name', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Date of Birth</label>
+                        <input type="date" value="${profileForm.dob}" oninput="updateProfileField('dob', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Phone Number</label>
+                        <input type="tel" value="${profileForm.phone}" oninput="updateProfileField('phone', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="(555) 000-0000">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Street Address</label>
+                        <input type="text" value="${profileForm.address}" oninput="updateProfileField('address', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="123 Main St">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">City</label>
+                        <input type="text" value="${profileForm.city}" oninput="updateProfileField('city', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="City">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">State</label>
+                            <input type="text" value="${profileForm.state}" oninput="updateProfileField('state', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="NY">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Zip Code</label>
+                            <input type="text" value="${profileForm.zip_code}" oninput="updateProfileField('zip_code', this.value)" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="10001">
+                        </div>
+                    </div>
+                </div>
+                ${getNavButtons(true, true)}
+            `;
+        }
+
+        function updateProfileField(field, val) {
+            profileForm[field] = val;
+        }
+
+        // Steps 3, 4, 5, 6: Dynamic Verification Assets (Auto, Home, Life, Medicare)
+        function renderAssetStep(container, key, title, icon, colorHex) {
+            const currentAsset = assetStates[key];
+            
+            container.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="${icon}" class="w-5 h-5" style="color: ${colorHex}"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 leading-tight">${title} Verification</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">Select a method to import or construct your verification structure details.</p>
+                    </div>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <label onclick="selectAssetMethod('${key}', 'upload')" class="flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${currentAsset.method === 'upload' ? 'border-[#1d7db8] bg-blue-50/50' : 'border-slate-200 hover:bg-slate-50'}">
+                        <input type="radio" name="method-${key}" ${currentAsset.method === 'upload' ? 'checked' : ''} class="mt-1 accent-[#1d7db8]">
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Upload Current Declaration Document</div>
+                            <div class="text-xs text-slate-500 mt-0.5">Drop a scan or image file snapshot to parse automatically.</div>
+                        </div>
+                    </label>
+
+                    <label onclick="selectAssetMethod('${key}', 'manual')" class="flex items-start gap-3 p-4 border rounded-xl cursor-pointer transition-all ${currentAsset.method === 'manual' ? 'border-[#1d7db8] bg-blue-50/50' : 'border-slate-200 hover:bg-slate-50'}">
+                        <input type="radio" name="method-${key}" ${currentAsset.method === 'manual' ? 'checked' : ''} class="mt-1 accent-[#1d7db8]">
+                        <div>
+                            <div class="font-bold text-sm text-slate-800">Enter Coverage Fields Manually</div>
+                            <div class="text-xs text-slate-500 mt-0.5">Type your policy information, deductibles, limits point by point.</div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="pt-2">
+                    <label class="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                        <input type="checkbox" id="no-ins-${key}" ${currentAsset.noInsurance ? 'checked' : ''} onchange="toggleNoInsurance('${key}', this.checked)" class="rounded text-[#1d7db8] accent-[#1d7db8]">
+                        <span>I do not currently have an active policy for this category</span>
+                    </label>
+                </div>
+                ${getNavButtons(true, true)}
+            `;
+        }
+
+        function selectAssetMethod(key, method) {
+            assetStates[key].method = method;
+            assetStates[key].noInsurance = false;
+            renderStep();
+        }
+
+        function toggleNoInsurance(key, isChecked) {
+            assetStates[key].noInsurance = isChecked;
+            if (isChecked) assetStates[key].method = null;
+            renderStep();
+        }
+
+        // Step 7: Pet Insurance Optional Check + Dynamic Finish Frame
+        function renderPetAndFinal(container) {
+            container.innerHTML = `
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <i data-lucide="paw-print" class="w-5 h-5 text-[#1d7db8]"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800 leading-tight">Optional Pet Coverage & Finalization</h2>
+                        <p class="text-sm text-slate-500 mt-0.5">You have arrived at the finish line! Secure additional family pets if applicable.</p>
+                    </div>
+                </div>
+                <div class="space-y-4 text-sm pt-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Pet Breed / Family Type (Optional)</label>
+                        <input type="text" value="${petData.type}" oninput="petData.type = this.value" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="Golden Retriever, Dog, Cat, etc.">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Current Pet Insurance Provider (If any)</label>
+                        <input type="text" value="${petData.provider}" oninput="petData.provider = this.value" class="w-full p-2.5 border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500" placeholder="Provider Name">
+                    </div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
+                        Your information architecture is ready for system engine sync execution.
+                    </div>
+                </div>
+                ${getNavButtons(true, true, "Complete Setup")}
+            `;
+        }
+
+        // ─── NAV UTILITIES AND CONTROLLERS ──────────────────────────────────
+        function getNavButtons(showBack, showNext, nextLabel = 'Continue') {
+            return `
+                <div class="flex gap-3 pt-4 border-t border-slate-100">
+                    ${showBack ? `
+                        <button onclick="handleBack()" class="w-1/3 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 font-semibold text-sm hover:bg-slate-50 transition-all">
+                            Back
+                        </button>
+                    ` : ''}
+                    ${showNext ? `
+                        <button onclick="handleNext()" class="flex-1 py-2.5 px-4 rounded-xl bg-[#1d7db8] text-white font-semibold text-sm hover:bg-[#166596] transition-all shadow-sm">
+                            ${nextLabel}
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function handleBack() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep();
+            }
+        }
+
+        function handleNext() {
+            if (currentStep >= 3 && currentStep <= 6) {
+                points = Math.min(21, points + (14 / 4));
+            }
+            if (currentStep < 7) {
+                currentStep++;
+                renderStep();
+            } else {
+                alert("🎉 Onboarding completed successfully! Data compiled onto simulated framework backend.");
+            }
+        }
+
+        // Initial bootstrap render call
+        renderStep();
+    </script>
+</body>
+</html>
