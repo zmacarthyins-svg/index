@@ -1,60 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Agent Zenn — Find Peace with Insurance</title>
-<meta name="description" content="Agent Zenn helps you find peace with insurance — calm, clear, and honest coverage guidance.">
-<link rel="icon" type="image/png" href="assets/favicon.png" />
-<!-- Your external stylesheet is integrated here -->
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Zenn — Find Peace with Insurance</title>
+  <meta name="description" content="Agent Zenn helps you find peace with insurance — calm, clear, and honest coverage guidance.">
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="bg"></div>
-<div class="bg bg2"></div>
-<div class="bg bg3"></div>
+  <!-- Ambient Animated Backgrounds -->
+  <div class="bg"></div>
+  <div class="bg bg2"></div>
+  <div class="bg bg3"></div>
 
-<header class="az-header">
-  <div class="row">
-    <a href="index.html" class="brand"><span class="name">Agent Zenn</span></a>
-    <div class="header-cta"><a href="dashboard.html" class="btn">Get Started</a></div>
-  </div>
-</header>
-
-<main>
-  <h1 class="headline">Find Peace with Insurance</h1>
-  <section class="video membership">
-    <div class="video-head trailer">
-      <p class="precopy">Stop stressing over confusing policies. Agent Zenn offers <strong>calm, clear, and honest</strong> guidance to help you protect what matters most.</p>
-      <div class="trailer-title">
-        <span class="line">Clear Coverage</span>
-        <span class="line">Honest Advice</span>
+  <!-- Header -->
+  <header class="az-header">
+    <div class="row">
+      <a href="index.html" class="brand">
+        <span class="name"><i class="fa-solid fa-shield-halved me-2"></i>Agent Zenn</span>
+      </a>
+      <div class="header-cta">
+        <a href="dashboard.html" class="btn"><i class="fa-solid fa-gauge me-1"></i> Get Started</a>
       </div>
     </div>
-    <div class="video-card"><iframe src="https://youtube.com" title="Agent Zenn Video" allowfullscreen></iframe></div>
-    <div class="video-cta"><a href="dashboard.html" class="btn">Join Free Today</a></div>
-  </section>
+  </header>
 
-  <section class="chat">
-    <div class="headerRow">
-      <div class="avatar">AZ</div>
-      <div>
-        <div style="font-weight:700;">Zenn Assistant</div>
-        <div style="font-size:0.85rem; color:#666;">Online</div>
+  <!-- Main Landing Content -->
+  <main class="page-container">
+    <h1 class="headline">Find Peace with Insurance</h1>
+    
+    <section class="video membership">
+      <div class="video-head trailer">
+        <p class="precopy">Stop stressing over confusing policies. Agent Zenn offers <strong>calm, clear, and honest</strong> guidance to help you protect what matters most.</p>
+        <div class="trailer-title">
+          <span class="line">Clear Coverage</span>
+          <span class="line">Honest Advice</span>
+        </div>
       </div>
-    </div>
-    <div class="bubble">Hello! Let's clear up the insurance confusion. What kind of coverage are you looking to explore today?</div>
-    <div class="actions">
-      <a href="dashboard.html" class="action">🛡️ Health Insurance</a>
-      <a href="dashboard.html" class="action">🚗 Auto & Property</a>
-      <a href="dashboard.html" class="action">💼 Business Coverage</a>
-      <a href="dashboard.html" class="action">🔍 General Questions</a>
-    </div>
-  </section>
-</main>
+      
+      <div class="video-card">
+        <iframe src="https://www.youtube.com/embed/d96cjJhvlMA" title="Agent Zenn Video" allowfullscreen></iframe>
+      </div>
+      
+      <div class="video-cta">
+        <a href="dashboard.html" class="btn btn-emerald"><i class="fa-solid fa-sparkles me-1"></i> Join Free Today</a>
+      </div>
+    </section>
 
-<footer class="footer"><p>&copy; 2026 Agent Zenn. All rights reserved.</p></footer>
+    <!-- Assistant Chat Section -->
+    <section class="chat card">
+      <div class="headerRow">
+        <div class="avatar">AZ</div>
+        <div>
+          <div style="font-weight:700;">Zenn Assistant</div>
+          <div style="font-size:0.85rem; color:var(--text-muted); display: flex; align-items: center; gap: 6px;">
+            <span style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block;"></span>
+            Online
+          </div>
+        </div>
+      </div>
+      
+      <div class="bubble">Hello! Let's clear up the insurance confusion. What kind of coverage are you looking to explore today?</div>
+      
+      <div class="actions">
+        <a href="dashboard.html" class="action">🛡️ Health Insurance</a>
+        <a href="dashboard.html" class="action">🚗 Auto & Property</a>
+        <a href="dashboard.html" class="action">💼 Business Coverage</a>
+        <a href="dashboard.html" class="action">🔍 General Questions</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Agent Zenn. All rights reserved. | Honest, Clear & Calm Insurance Guidance</p>
+  </footer>
 
 </body>
 </html>

@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Zenn - Insurance Profile Command Center</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================
+       Agent Zenn Style System Specification
+       ========================================================== */
+    :root {
+      --bg-dark: #0b1120;
+      --bg-card: rgba(15, 23, 42, 0.75);
+      --bg-card-hover: rgba(30, 41, 59, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.3);
+      
+      --zenn-blue: #1d7db8;
+      --zenn-cyan: #38bdf8;
+      --zenn-emerald: #10b981;
+      --zenn-amber: #f59e0b;
+      --zenn-purple: #8b5cf6;
+      
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Glowing Orbs */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+    .bg1 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(29, 125, 184, 0.4) 0%, rgba(0,0,0,0) 70%);
+      top: -100px;
+      left: -100px;
+    }
+    .bg2 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(0,0,0,0) 70%);
+      bottom: -150px;
+      right: -100px;
+    }
+    .bg3 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(0,0,0,0) 70%);
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Zenn Glass Card Base */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:hover {
+      border-color: var(--border-accent);
+    }
+
+    /* Custom Header */
+    .az-header {
+      background: rgba(11, 17, 32, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Gradient Typography */
+    .headline-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .badge-cyan {
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-emerald {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-dark {
+      background: rgba(100, 116, 139, 0.2);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    /* Progress Ring Animation */
+    .ring-circle {
+      transition: stroke-dashoffset 0.8s ease-in-out, stroke 0.4s ease;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+
+    /* Custom Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      padding: 0.625rem 1.25rem;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+    .btn-emerald:hover {
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-cyan {
+      background: linear-gradient(135deg, #0284c7 0%, #1d7db8 100%);
+      color: white;
+      box-shadow: 0 4px 14px rgba(29, 125, 184, 0.35);
+    }
+    .btn-cyan:hover {
+      box-shadow: 0 6px 20px rgba(29, 125, 184, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Drawer / Expandable Panel Smooth Slide */
+    .drawer-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0, 1, 0, 1), opacity 0.3s ease, padding 0.3s ease;
+      opacity: 0;
+    }
+    .drawer-content.open {
+      max-height: 600px;
+      opacity: 1;
+      transition: max-height 0.4s cubic-bezier(0.95, 0.05, 0.795, 0.035), opacity 0.4s ease;
+    }
+
+    /* Custom Input Controls */
+    .input-field {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      color: #f8fafc;
+      outline: none;
+      width: 100%;
+      font-size: 0.875rem;
+    }
+    .input-field:focus {
+      border-color: var(--zenn-cyan);
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Alert Boxes */
+    .alert-item {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+    }
+
+    /* Custom Toast Notification */
+    #toast {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    #toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="pb-16">
+
+  <!-- Ambient background glow effects -->
+  <div class="bg-orb bg1"></div>
+  <div class="bg-orb bg2"></div>
+  <div class="bg-orb bg3"></div>
+
+  <div class="relative z-10">
+
+    <!-- Agent Zenn Header Navbar -->
+    <header class="az-header sticky top-0 z-50 px-4 lg:px-8 py-3.5 mb-8">
+      <div class="max-w-4xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-400 flex items-center justify-center shadow-lg shadow-sky-500/20">
+            <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+          </div>
+          <div>
+            <span class="text-lg font-extrabold tracking-wider text-white">AGENT<span class="text-sky-400">ZENN</span></span>
+            <span class="block text-[10px] text-slate-400 tracking-widest uppercase font-semibold">Insurance Intelligence</span>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <div class="hidden sm:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800 text-xs">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-slate-300 font-medium" id="nav-user-email">user@agentzenn.io</span>
+          </div>
+          <button id="reset-btn" title="Reset Demo Data" class="btn btn-outline py-1.5 px-3 text-xs">
+            <i class="fa-solid fa-rotate-right"></i> Reset Demo
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-2xl mx-auto px-4 sm:px-6 space-y-6">
+
+      <!-- Header Title Section -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight headline-gradient">Insurance Profile</h1>
+          <p class="text-sm text-slate-400 mt-1">Your personal insurance command center & verification portal.</p>
+        </div>
+        <div class="self-start sm:self-auto">
+          <span class="badge badge-cyan px-3 py-1">
+            <i class="fa-solid fa-user-check mr-1.5"></i> Verified Identity
+          </span>
+        </div>
+      </div>
+
+      <!-- Protection Score Card with SVG Radial Gauge -->
+      <section class="card p-6 sm:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+        <div class="absolute -top-12 -right-12 w-36 h-36 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Protection Score Ring</h2>
+
+        <div class="relative w-44 h-44 flex items-center justify-center">
+          <!-- SVG Gauge Ring -->
+          <svg class="w-full h-full" viewBox="0 0 120 120">
+            <!-- Background Ring -->
+            <circle
+              cx="60" cy="60" r="50"
+              fill="none"
+              stroke="rgba(255, 255, 255, 0.06)"
+              stroke-width="10"
+            />
+            <!-- Animated Dynamic Progress Ring -->
+            <circle
+              id="ring-progress"
+              class="ring-circle"
+              cx="60" cy="60" r="50"
+              fill="none"
+              stroke="#38bdf8"
+              stroke-width="10"
+              stroke-linecap="round"
+              stroke-dasharray="314.159"
+              stroke-dashoffset="314.159"
+            />
+          </svg>
+
+          <!-- Ring Center Stats Display -->
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span id="score-val" class="text-4xl font-extrabold text-white tracking-tight">0.0</span>
+            <span class="text-xs font-semibold text-slate-400 mt-0.5">/ 21 Points</span>
+          </div>
+        </div>
+
+        <!-- Score Dynamic Subtext -->
+        <p id="ring-subtext" class="text-xs text-slate-400 mt-5 max-w-sm leading-relaxed">
+          Sync or upload your policies below to earn up to <span id="points-needed" class="text-sky-400 font-bold">7.0</span> more points.
+        </p>
+      </section>
+
+      <!-- "Why Verify?" Dynamic Container -->
+      <section id="why-verify-card" class="card p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+          <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Why Verify Your Policies?</p>
+          <span class="text-[11px] text-amber-400 font-medium bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">Action Required</span>
+        </div>
+
+        <div id="why-points-list" class="grid grid-cols-1 gap-3.5 sm:gap-4">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- Coverage Status Interactive Cards Section -->
+      <section class="card p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-800/80 pb-3">
+          <div>
+            <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Coverage Status</p>
+            <p class="text-xs text-slate-400 mt-0.5">Click any asset category below to verify or edit policy details</p>
+          </div>
+          <div class="text-[11px] text-slate-400 self-end sm:self-auto">
+            <span id="verified-count-badge" class="font-bold text-emerald-400">0</span>/5 Completed
+          </div>
+        </div>
+
+        <!-- Assets List -->
+        <div id="coverage-list" class="space-y-3">
+          <!-- Rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- Agent Assessment / Risk Tier Section -->
+      <section id="risk-tier-card" class="card p-5 sm:p-6 space-y-4">
+        <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest">Agent Assessment</p>
+        
+        <div id="tier-banner" class="flex items-center justify-between p-4 rounded-xl border transition-all duration-300">
+          <div class="flex items-center gap-3.5">
+            <div id="tier-icon-box" class="w-10 h-10 rounded-xl flex items-center justify-center text-lg">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <div>
+              <p class="text-xs text-slate-400 font-medium">Assessed Rating Tier</p>
+              <p id="tier-label" class="text-xl font-extrabold capitalize tracking-tight mt-0.5">Preferred</p>
+            </div>
+          </div>
+          <span id="tier-badge" class="badge badge-cyan">Optimal Rate</span>
+        </div>
+
+        <div class="space-y-2 pt-2">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tips to Improve Profile Score</p>
+          <div id="tips-container" class="space-y-2">
+            <!-- Dynamically populated tips -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Global Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-900 border border-emerald-500/40 text-emerald-300 px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <div>
+      <h4 id="toast-title" class="font-bold text-xs text-white">Policy Verified!</h4>
+      <p id="toast-msg" class="text-xs text-slate-300">Points updated successfully.</p>
+    </div>
+  </div>
+
+  <!-- JavaScript App Logic -->
+  <script>
+    // Asset point weight (~4.666 points per verified mandatory policy up to 21 max)
+    const ASSET_POINT = 14 / 3; 
+
+    // Configuration for Assets
+    const ASSETS = [
+      { id: 'auto', label: 'Auto Insurance', icon: 'fa-car-side', tag: 'REQUIRED', note: 'Mandatory for Verification', iconColor: '#38bdf8' },
+      { id: 'home', label: 'Home / Renters', icon: 'fa-house-chimney', tag: 'REQUIRED', note: 'Mandatory for Verification', iconColor: '#38bdf8' },
+      { id: 'life', label: 'Life Protection', icon: 'fa-heart-pulse', tag: 'REQUIRED', note: 'Mandatory for Verification', iconColor: '#38bdf8' },
+      { id: 'medicare', label: 'Medicare Plan', icon: 'fa-shield-halved', tag: 'PROFILE', note: 'Medicare-specific details', iconColor: '#94a3b8' },
+      { id: 'pet', label: 'Pet Coverage', icon: 'fa-paw', tag: 'PROFILE', note: 'Pet health coverage details', iconColor: '#94a3b8' },
+    ];
+
+    // "Why Verify?" Cards Data
+    const WHY_POINTS = [
+      { icon: 'fa-shield-check', label: 'Verify Coverage', desc: 'Sync via API or upload policy PDFs to confirm current active protection.' },
+      { icon: 'fa-magnifying-glass-chart', label: 'Identify Gaps', desc: 'Real-time AI scans pinpoint hidden exclusions and liability vulnerabilities.' },
+      { icon: 'fa-star', label: 'Earn Points', desc: 'Reach 21 peace points to qualify for preferred underwriting tier discounts.' },
+    ];
+
+    // Initial Profile Mock State
+    let profileState = {
+      userEmail: 'alex.morgan@agentzenn.io',
+      peace_points: 14.0, // default starts at 14 points (~2 mandatory assets verified)
+      risk_tier: 'preferred', // preferred, standard, or basic
+      profile_data: {
+        autoMethod: 'api',
+        autoFields: { policyNo: 'POL-AUTO-8891', insurer: 'Geico', expDate: '2027-05-12' },
+        homeMethod: 'upload',
+        homeFields: { policyNo: 'POL-HM-4402', insurer: 'State Farm', expDate: '2027-01-20' },
+        lifeMethod: null,
+        lifeFields: {},
+        medicareMethod: null,
+        medicareFields: {},
+        pet_type: 'none',
+        petMethod: null,
+        petFields: {},
+        improvement_tips: [
+          'Verify your Life Insurance policy to unlock maximum 21/21 Peace Points.',
+          'Consider bundling Home and Auto under a single carrier for an extra 15% rate reduction.',
+          'Update annual mileage on Auto coverage to reflect recent remote work status.'
+        ]
+      }
+    };
+
+    // Calculate verified IDs based on state
+    function getVerifiedIds() {
+      const pd = profileState.profile_data;
+      const verified = [];
+      if (pd.autoMethod === 'api' || pd.autoMethod === 'upload') verified.push('auto');
+      if (pd.homeMethod === 'api' || pd.homeMethod === 'upload') verified.push('home');
+      if (pd.lifeMethod === 'api' || pd.lifeMethod === 'upload') verified.push('life');
+      if (pd.medicareMethod === 'api' || pd.medicareMethod === 'upload') verified.push('medicare');
+      if (pd.petMethod === 'api' || pd.petMethod === 'upload' || (pd.pet_type && pd.pet_type.toLowerCase() !== 'none')) verified.push('pet');
+      return verified;
+    }
+
+    // App Initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStateFromStorage();
+      renderApp();
+
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        localStorage.removeItem('agent_zenn_profile');
+        location.reload();
+      });
+    });
+
+    function loadStateFromStorage() {
+      const stored = localStorage.getItem('agent_zenn_profile');
+      if (stored) {
+        try {
+          profileState = JSON.parse(stored);
+        } catch (e) {
+          console.error("Failed to parse local profile state", e);
+        }
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem('agent_zenn_profile', JSON.stringify(profileState));
+    }
+
+    // Core Render Function
+    function renderApp() {
+      const verifiedIds = getVerifiedIds();
+      const points = Math.min(21, Math.max(0, profileState.peace_points));
+
+      // 1. Update Navigation User info
+      document.getElementById('nav-user-email').innerText = profileState.userEmail;
+
+      // 2. Render Score Radial Ring
+      renderScoreRing(points);
+
+      // 3. Render "Why Verify?" section visibility & content
+      renderWhyVerifySection(verifiedIds);
+
+      // 4. Render Coverage Cards List
+      renderCoverageList(verifiedIds);
+
+      // 5. Render Risk Tier & Tips
+      renderRiskTier();
+    }
+
+    // 1. Protection Score Gauge Render Logic
+    function renderScoreRing(points) {
+      const scoreValEl = document.getElementById('score-val');
+      const ringCircle = document.getElementById('ring-progress');
+      const ringSubtext = document.getElementById('ring-subtext');
+      const pointsNeededEl = document.getElementById('points-needed');
+
+      scoreValEl.innerText = points.toFixed(1);
+
+      // Circle circumfrence = 2 * PI * r = 2 * Math.PI * 50 = ~314.159
+      const maxPoints = 21;
+      const circumference = 314.159;
+      const progressRatio = points / maxPoints;
+      const strokeDashoffset = circumference - (progressRatio * circumference);
+
+      ringCircle.style.strokeDashoffset = strokeDashoffset;
+
+      // Dynamic Color transition based on score ratio
+      if (points >= 20.9) {
+        ringCircle.style.stroke = '#10b981'; // Emerald
+      } else if (points >= 14) {
+        ringCircle.style.stroke = '#38bdf8'; // Cyan
+      } else {
+        ringCircle.style.stroke = '#f59e0b'; // Amber
+      }
+
+      if (points < 21) {
+        const needed = (21 - points).toFixed(1);
+        ringSubtext.style.display = 'block';
+        ringSubtext.innerHTML = `Sync or upload your policies below to earn up to <span class="text-sky-400 font-bold">${needed}</span> more points.`;
+      } else {
+        ringSubtext.innerHTML = `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check mr-1"></i> Maximum Protection Points Reached!</span> Your agent profile is fully verified.`;
+      }
+    }
+
+    // 2. "Why Verify?" Cards Section Render
+    function renderWhyVerifySection(verifiedIds) {
+      const mandatoryVerifiedCount = verifiedIds.filter(id => ['auto', 'home', 'life'].includes(id)).length;
+      const whyVerifyCard = document.getElementById('why-verify-card');
+
+      // Hide section if all 3 mandatory are verified
+      if (mandatoryVerifiedCount >= 3) {
+        whyVerifyCard.style.display = 'none';
+        return;
+      }
+
+      whyVerifyCard.style.display = 'block';
+      const container = document.getElementById('why-points-list');
+      container.innerHTML = WHY_POINTS.map(pt => `
+        <div class="flex items-start gap-3.5 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80 hover:border-slate-700/80 transition-colors">
+          <div class="w-9 h-9 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0 text-sky-400 text-sm mt-0.5">
+            <i class="fa-solid ${pt.icon}"></i>
+          </div>
+          <div>
+            <p class="text-sm font-bold text-white">${pt.label}</p>
+            <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">${pt.desc}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 3. Render Interactive Coverage Cards
+    function renderCoverageList(verifiedIds) {
+      const container = document.getElementById('coverage-list');
+      document.getElementById('verified-count-badge').innerText = verifiedIds.length;
+
+      container.innerHTML = ASSETS.map(asset => {
+        const isVerified = verifiedIds.includes(asset.id);
+        const pd = profileState.profile_data;
+        const currentMethod = pd[`${asset.id}Method`] || (isVerified ? 'api' : null);
+        const currentFields = pd[`${asset.id}Fields`] || {};
+
+        return `
+          <div class="rounded-xl border border-slate-800/80 bg-slate-900/40 hover:bg-slate-900/70 transition-all overflow-hidden" id="card-${asset.id}">
+            <!-- Card Header Click Row -->
+            <div onclick="toggleDrawer('${asset.id}')" class="p-4 flex items-center justify-between cursor-pointer select-none">
+              <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0" style="background: rgba(255,255,255,0.03); color: ${asset.iconColor}; border: 1px solid rgba(255,255,255,0.06);">
+                  <i class="fa-solid ${asset.icon}"></i>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <h3 class="text-sm font-bold text-white">${asset.label}</h3>
+                    <span class="badge ${asset.tag === 'REQUIRED' ? 'badge-cyan' : 'badge-dark'} text-[9px] px-2 py-0.5">${asset.tag}</span>
+                  </div>
+                  <p class="text-xs text-slate-400 mt-0.5">${asset.note}</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-3">
+                ${isVerified ? `
+                  <span class="badge badge-emerald flex items-center gap-1">
+                    <i class="fa-solid fa-circle-check"></i> Verified
+                  </span>
+                ` : `
+                  <span class="badge badge-dark flex items-center gap-1 text-slate-400">
+                    <i class="fa-solid fa-circle-notch"></i> Unverified
+                  </span>
+                `}
+                <i id="chevron-${asset.id}" class="fa-solid fa-chevron-down text-slate-500 text-xs transition-transform duration-300"></i>
+              </div>
+            </div>
+
+            <!-- Drawer Container -->
+            <div id="drawer-${asset.id}" class="drawer-content px-4">
+              <div class="pt-2 pb-5 border-t border-slate-800/80 space-y-4">
+
+                <div class="text-xs text-slate-400 bg-slate-950/60 p-3 rounded-lg border border-slate-800">
+                  <span class="text-sky-400 font-semibold">Verification Method:</span> Choose to sync automatically via Carrier API or upload policy document scans.
+                </div>
+
+                <!-- Input Selection Form -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Carrier / Provider</label>
+                    <input type="text" id="input-provider-${asset.id}" value="${currentFields.insurer || ''}" placeholder="e.g. Geico, Progressive" class="input-field">
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Policy Number</label>
+                    <input type="text" id="input-policyno-${asset.id}" value="${currentFields.policyNo || ''}" placeholder="e.g. POL-99201" class="input-field">
+                  </div>
+                </div>
+
+                <!-- Action Method Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <div class="flex items-center gap-2">
+                    <button onclick="handleSave('${asset.id}', 'api')" class="btn btn-cyan btn-sm text-xs py-2 px-3">
+                      <i class="fa-solid fa-cloud-arrow-up"></i> Sync Instant API
+                    </button>
+                    <button onclick="handleSave('${asset.id}', 'upload')" class="btn btn-outline btn-sm text-xs py-2 px-3">
+                      <i class="fa-solid fa-file-arrow-up"></i> Upload Doc PDF
+                    </button>
+                  </div>
+
+                  ${isVerified ? `
+                    <button onclick="handleRemove('${asset.id}')" class="text-xs text-rose-400 hover:text-rose-300 transition-colors py-1 px-2">
+                      <i class="fa-solid fa-trash-can mr-1"></i> Clear Verification
+                    </button>
+                  ` : ''}
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Toggle Drawer Expansion
+    function toggleDrawer(id) {
+      const drawer = document.getElementById(`drawer-${id}`);
+      const chevron = document.getElementById(`chevron-${id}`);
+      
+      const isOpen = drawer.classList.contains('open');
+
+      // Close all drawers
+      document.querySelectorAll('.drawer-content').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('[id^="chevron-"]').forEach(c => c.style.transform = 'rotate(0deg)');
+
+      if (!isOpen) {
+        drawer.classList.add('open');
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Save/Verify Action
+    function handleSave(id, method) {
+      const providerInput = document.getElementById(`input-provider-${id}`);
+      const policyNoInput = document.getElementById(`input-policyno-${id}`);
+
+      const provider = providerInput?.value.trim() || 'Verified Provider';
+      const policyNo = policyNoInput?.value.trim() || 'POL-' + Math.floor(100000 + Math.random() * 900000);
+
+      const verifiedIds = getVerifiedIds();
+      const isAlreadyVerified = verifiedIds.includes(id);
+
+      // Update state
+      const pd = profileState.profile_data;
+      pd[`${id}Method`] = method;
+      pd[`${id}Fields`] = { insurer: provider, policyNo: policyNo, expDate: '2027-12-31' };
+
+      // Calculate Points increase if first time verifying auto/home/life
+      if (!isAlreadyVerified && ['auto', 'home', 'life'].includes(id)) {
+        profileState.peace_points = Math.min(21, profileState.peace_points + ASSET_POINT);
+      }
+
+      saveState();
+      renderApp();
+
+      showToast(`Verified ${id.toUpperCase()}`, `Policy details successfully saved & synced.`);
+    }
+
+    // Remove / Unverify Action
+    function handleRemove(id) {
+      const verifiedIds = getVerifiedIds();
+      const isVerified = verifiedIds.includes(id);
+
+      const pd = profileState.profile_data;
+      pd[`${id}Method`] = null;
+      pd[`${id}Fields`] = {};
+
+      if (isVerified && ['auto', 'home', 'life'].includes(id)) {
+        profileState.peace_points = Math.max(0, profileState.peace_points - ASSET_POINT);
+      }
+
+      saveState();
+      renderApp();
+
+      showToast(`Verification Removed`, `${id.toUpperCase()} policy reset to unverified.`);
+    }
+
+    // 4. Render Risk Tier & Assessment
+    function renderRiskTier() {
+      const points = profileState.peace_points;
+      const banner = document.getElementById('tier-banner');
+      const iconBox = document.getElementById('tier-icon-box');
+      const label = document.getElementById('tier-label');
+      const badge = document.getElementById('tier-badge');
+      const tipsContainer = document.getElementById('tips-container');
+
+      if (points >= 18) {
+        banner.className = "flex items-center justify-between p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/10 transition-all duration-300";
+        iconBox.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 bg-emerald-500/20 text-emerald-400";
+        label.className = "text-xl font-extrabold capitalize tracking-tight mt-0.5 text-emerald-300";
+        label.innerText = "Preferred Premier Tier";
+        badge.className = "badge badge-emerald";
+        badge.innerText = "Lowest Rate Rating";
+      } else if (points >= 10) {
+        banner.className = "flex items-center justify-between p-4 rounded-xl border border-sky-500/30 bg-sky-500/10 transition-all duration-300";
+        iconBox.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 bg-sky-500/20 text-sky-400";
+        label.className = "text-xl font-extrabold capitalize tracking-tight mt-0.5 text-sky-300";
+        label.innerText = "Standard Tier";
+        badge.className = "badge badge-cyan";
+        badge.innerText = "Standard Rates";
+      } else {
+        banner.className = "flex items-center justify-between p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 transition-all duration-300";
+        iconBox.className = "w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 bg-amber-500/20 text-amber-400";
+        label.className = "text-xl font-extrabold capitalize tracking-tight mt-0.5 text-amber-300";
+        label.innerText = "Basic Risk Tier";
+        badge.className = "badge badge-dark";
+        badge.innerText = "Needs Verification";
+      }
+
+      // Render Improvement Tips
+      const tips = profileState.profile_data.improvement_tips || [];
+      tipsContainer.innerHTML = tips.map(tip => `
+        <div class="alert-item flex items-start gap-2.5">
+          <i class="fa-solid fa-star text-emerald-400 text-xs mt-0.5 shrink-0"></i>
+          <p class="text-xs text-slate-300 leading-relaxed">${tip}</p>
+        </div>
+      `).join('');
+    }
+
+    // Toast Notification helper
+    function showToast(title, msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-msg').innerText = msg;
+
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
