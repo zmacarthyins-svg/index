@@ -3,103 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Agent Zenn — Find Peace# with Insurance</title>
+<title>Agent Zenn — Find Peace with Insurance</title>
 <meta name="description" content="Agent Zenn helps you find peace with insurance — calm, clear, and honest coverage guidance.">
 <link rel="icon" type="image/png" href="assets/favicon.png" />
-<style>
-:root {
-  --zen-blue: #5CA8D3;
-  --shield-blue: #2E6D9E;
-  --clemson: #F56600;
-  --cream: #F9F3ED;
-  --warm-sand: #F4E8DA;
-  --light-tan: #EBD9C8;
-  --text: #3B3B3B;
-  --card: rgba(255, 255, 255, .78);
-  --border: rgba(255, 255, 255, .65);
-  --accent: #F26A2E;
-  --header-h: 64px;
-}
-* { box-sizing: border-box; }
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  color: var(--text);
-  background-color: var(--cream);
-  overflow-x: hidden;
-}
-.bg {
-  animation: slide 4s ease-in-out infinite alternate;
-  background-image: linear-gradient(-60deg, var(--zen-blue) 50%, var(--cream) 50%);
-  position: fixed;
-  top: 0; right: -50%; bottom: 0; left: -50%;
-  opacity: 0.5;
-  z-index: -1;
-}
-.bg2 { animation-direction: alternate-reverse; animation-duration: 5s; }
-.bg3 { animation-duration: 6s; }
-@keyframes slide {
-  0% { transform: translateX(-25%); }
-  100% { transform: translateX(25%); }
-}
-body > *:not(.bg):not(.az-header) {
-  position: relative;
-  z-index: 1;
-}
-.az-header {
-  position: fixed !important;
-  top: 0; left: 0; right: 0;
-  width: 100%;
-  z-index: 100000;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(0,0,0,.06);
-}
-.az-header .row {
-  max-width: 1100px; margin: 0 auto; padding: 12px 18px;
-  min-height: var(--header-h);
-  display: flex; align-items: center; justify-content: space-between; gap: 14px;
-}
-.brand { display: flex; align-items: center; text-decoration: none; color: inherit; }
-.brand .name { font-weight: 900; letter-spacing: .02em; font-size: 1.3rem; }
-.header-cta .btn {
-  background: var(--accent); color: #fff; text-decoration: none; border: none; display: inline-block;
-  padding: 10px 18px; border-radius: 12px; font-weight: 800; font-size: .98rem; cursor: pointer;
-}
-body { padding-top: var(--header-h); }
-.headline {
-  text-align: center;
-  font-weight: 900;
-  font-size: clamp(1.6rem, 2.5vw + 1rem, 3rem);
-  color: var(--shield-blue);
-  margin: 40px auto 18px;
-}
-.video.membership {
-  width: min(92vw, 900px); margin: 40px auto; text-align: center;
-  background: #fff; border-radius: 22px; padding: 40px 20px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.08);
-}
-.precopy { margin: 0 auto 28px; max-width: 800px; font-size: 1.1rem; line-height: 1.6; color: #555; }
-.trailer-title { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.trailer-title .line { font-weight: 900; text-transform: uppercase; font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem); color: #1f1f1f; }
-.video-card { width: min(85vw, 620px); margin: 32px auto 20px; border-radius: 14px; overflow: hidden; }
-.video-card iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; display: block; }
-.video-cta { margin-top: 30px; }
-.video-cta .btn { background: var(--accent); color: #fff; padding: 15px 36px; font-size: 1.1rem; font-weight: 800; border: none; border-radius: 14px; text-decoration: none; display: inline-block; cursor: pointer; }
-.chat {
-  background: var(--card); border: 1px solid var(--border); backdrop-filter: blur(10px);
-  border-radius: 18px; padding: 24px; text-align: left; width: min(92vw, 760px); margin: 40px auto 40px;
-}
-.headerRow { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--shield-blue); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; }
-.bubble { background: var(--cream); border: 1px solid #e6eef6; border-radius: 14px; padding: 14px 16px; line-height: 1.5; }
-.actions { display: grid; gap: 10px; margin-top: 16px; }
-@media (min-width:700px) { .actions { grid-template-columns: 1fr 1fr; } }
-.action { width: 100%; display: flex; align-items: center; gap: 10px; padding: 14px 16px; font-size: 1rem; font-weight: 700; border-radius: 14px; border: 1px solid #e2e8f0; background: #f7fafc; color: #0b2440; text-decoration: none; cursor: pointer; }
-.footer { text-align: center; font-weight: 600; margin: 40px 0 20px; }
-</style>
+<!-- Your external stylesheet is integrated here -->
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
